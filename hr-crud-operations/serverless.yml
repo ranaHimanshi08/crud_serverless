@@ -1,33 +1,24 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-
-#
-# Happy Coding!
-
 service: hr-crud
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 frameworkVersion: "3"
 
+# provider and IamRole config
 provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
   region: us-east-1
+  environment:
+    hr_crud_table: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
 
-# creating services for crud operations
+# creating services for crud operations functions
 functions:
   hr_crud_operations:
     handler: api/movie.submit
@@ -37,3 +28,20 @@ functions:
       - http:
           path: movies
           method: post
+
+resources:
+  Resources:
+    HrCrudMoviesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.hr_crud_table}
