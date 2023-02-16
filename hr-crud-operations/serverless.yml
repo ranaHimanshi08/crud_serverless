@@ -45,6 +45,14 @@ functions:
       - http:
           path: movies/{id}
           method: get
+  upadteMovie:
+    handler: api/movie.update
+    memorySize: 128
+    description: Update movie
+    events:
+      - http:
+          path: movie/{id}
+          method: put
   deleteMovie:
     handler: api/movie.delete
     memorySize: 128

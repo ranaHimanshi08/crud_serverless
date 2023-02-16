@@ -70,7 +70,50 @@ const movieInfo = (title, director, release_data, rating) => {
   };
 };
 
+// put method
+module.exports.update = (event, context, callback) => {
+  const requestBody = JSON.parse(event.body);
+  const title = requestBody.title;
+  const director = requestBody.director;
+  const release_data = requestBody.release_data;
+  const rating = requestBody.rating;
 
+  if (
+    typeof title !== "string" ||
+    typeof director !== "string" ||
+    typeof rating !== "number"
+  ) {
+    console.error("Validation Failed");
+    callback(new Error("Couldn't submit movie because of validation errors."));
+    return;
+  }
+  const result = {
+    TableName: process.env.hr_crud_table,
+    Key: {
+      id: event.pathParameters.id,
+    },
+    UpdateExpression:
+      "set title = :t, director = :d, release_data = :da, rating = :r",
+    ExpressionAttributeValues: {
+      ":t": title,
+      ":d": director,
+      ":da": release_data,
+      ":r": rating,
+    },
+  };
+  dynamoDB.update(result, function (err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: `The movie got updated ${title}`,
+        }),
+      });
+    }
+  });
+};
 
 // code for the get
 module.exports.list = (event, context, callback) => {
