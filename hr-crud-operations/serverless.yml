@@ -20,6 +20,7 @@ provider:
 
 # creating services for crud operations functions
 functions:
+  # function for handling the post request
   hr_crud_operations:
     handler: api/movie.submit
     memorySize: 128
@@ -28,6 +29,14 @@ functions:
       - http:
           path: movies
           method: post
+  listMovies:
+    handler: api/movie.list
+    memorySize: 128
+    description: List all Movies
+    events:
+      - http:
+          path: movies
+          method: get
 
 resources:
   Resources:

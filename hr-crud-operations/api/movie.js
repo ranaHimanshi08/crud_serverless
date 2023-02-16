@@ -7,6 +7,7 @@ AWS.config.setPromisesDependency(require("bluebird"));
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
+// code for the post request
 module.exports.submit = (event, context, callback) => {
   const requestBody = JSON.parse(event.body);
   const title = requestBody.title;
@@ -29,6 +30,7 @@ module.exports.submit = (event, context, callback) => {
         statusCode: 200,
         body: JSON.stringify({
           message: `The Movie Was Submited`,
+          data: res,
         }),
       });
     })
@@ -67,3 +69,32 @@ const movieInfo = (title, director, release_data, rating) => {
     updatedAt: timestamp,
   };
 };
+
+// code for the get
+module.exports.list = (event, context, callback) => {
+  var result = {
+    TableName: process.env.hr_crud_table,
+    ProjectionExpression: "id, title, director, release_data, rating",
+  };
+
+  console.log("Scanning Movie Table.");
+  const onScan = (err, data) => {
+    if (err) {
+      console.log(
+        "Scan failed to load data. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
+      callback(err);
+    } else {
+      console.log("Scan Succeeded.");
+      return callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          Movies: data.Items,
+        }),
+      });
+    }
+  };
+  dynamoDB.scan(result, onScan);
+};
+
