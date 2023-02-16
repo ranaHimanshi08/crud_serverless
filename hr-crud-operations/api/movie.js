@@ -17,8 +17,7 @@ module.exports.submit = (event, context, callback) => {
   if (
     typeof title !== "string" ||
     typeof director !== "string" ||
-    typeof rating !== "number" ||
-    typeof release_data !== "date"
+    typeof rating !== "number"
   ) {
     console.error("Validation Failed");
     callback(new Error("Couldn't submit movie because of validation errors."));
@@ -30,7 +29,6 @@ module.exports.submit = (event, context, callback) => {
         statusCode: 200,
         body: JSON.stringify({
           message: `The Movie Was Submited`,
-          data: requestBody,
         }),
       });
     })
@@ -69,5 +67,3 @@ const movieInfo = (title, director, release_data, rating) => {
     updatedAt: timestamp,
   };
 };
-
-
