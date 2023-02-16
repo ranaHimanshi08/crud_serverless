@@ -37,6 +37,14 @@ functions:
       - http:
           path: movies
           method: get
+  movieDetails:
+    handler: api/movie.get
+    memorySize: 128
+    description: Fetch a movie with Id
+    events:
+      - http:
+          path: movies/{id}
+          method: get
 
 resources:
   Resources:

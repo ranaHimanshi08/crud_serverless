@@ -98,3 +98,28 @@ module.exports.list = (event, context, callback) => {
   dynamoDB.scan(result, onScan);
 };
 
+// get with parameter
+module.exports.get = (event, context, callback) => {
+  const result = {
+    TableName: process.env.hr_crud_table,
+    Key: {
+      id: event.pathParameters.id,
+    },
+  };
+
+  dynamoDB
+    .get(result)
+    .promise()
+    .then((result) => {
+      const response = {
+        statusCode: 200,
+        body: JSON.stringify(result.Item),
+      };
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error(error);
+      callback(new Error("Couldn't fetch movies."));
+      return;
+    });
+};
