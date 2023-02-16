@@ -70,6 +70,8 @@ const movieInfo = (title, director, release_data, rating) => {
   };
 };
 
+
+
 // code for the get
 module.exports.list = (event, context, callback) => {
   var result = {
@@ -120,6 +122,34 @@ module.exports.get = (event, context, callback) => {
     .catch((error) => {
       console.error(error);
       callback(new Error("Couldn't fetch movies."));
+      return;
+    });
+};
+
+// delete
+module.exports.delete = (event, context, callback) => {
+  const result = {
+    TableName: process.env.hr_crud_table,
+    Key: {
+      id: event.pathParameters.id,
+    },
+  };
+  dynamoDB
+    .delete(result)
+    .promise()
+    .then((result) => {
+      const response = {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: `The Movie Was Deleted`,
+          data: result,
+        }),
+      };
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error(error);
+      callback(new Error("Couldn't find movies."));
       return;
     });
 };

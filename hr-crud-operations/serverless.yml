@@ -24,7 +24,7 @@ functions:
   hr_crud_operations:
     handler: api/movie.submit
     memorySize: 128
-    description: Submit the movie information respectively (id, title, release_data, director, duration, rating)
+    description: Submit the movie information respectively (title, release_data, director, duration, rating)
     events:
       - http:
           path: movies
@@ -45,6 +45,14 @@ functions:
       - http:
           path: movies/{id}
           method: get
+  deleteMovie:
+    handler: api/movie.delete
+    memorySize: 128
+    description: Delete a movie
+    events:
+      - http:
+          path: movie/{id}
+          method: delete
 
 resources:
   Resources:
