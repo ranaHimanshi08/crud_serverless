@@ -185,7 +185,6 @@ module.exports.delete = (event, context, callback) => {
         statusCode: 200,
         body: JSON.stringify({
           message: `The Movie Was Deleted`,
-          data: result,
         }),
       };
       callback(null, response);
